@@ -12,16 +12,11 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-data_table = LOAD 'data.tsv' USING PigStorage('\t')
-    AS (
-        columna1:chararray,
-        columna2:BAG{dict:TUPLE(letter:chararray)},
-        columna3:MAP[]
-    );
+datos = LOAD 'data.tsv' USING PigStorage('\t') AS (columna1:chararray, columna2:BAG{dict:TUPLE(letter:chararray)}, columna3:MAP[]);
 
-specific_columns = FOREACH data_table GENERATE columna2;
-words = FOREACH specific_columns GENERATE FLATTEN(columna2) AS word;
-grouped = GROUP words BY word;
-wordcount = FOREACH grouped GENERATE group, COUNT(words);
+seleccion = FOREACH datos GENERATE columna2;
+letras = FOREACH seleccion GENERATE FLATTEN(columna2) AS letra;
+grupo_letras = GROUP letras BY letra;
+cuenta_letras = FOREACH grupo_letras GENERATE group, COUNT(letras);
 
-STORE wordcount INTO 'output' USING PigStorage(',');
+STORE cuenta_letras INTO 'output' USING PigStorage(',');
