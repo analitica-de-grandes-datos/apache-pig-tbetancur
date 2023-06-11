@@ -20,7 +20,7 @@ $ pig -x local -f pregunta.pig
 
         /* >>> Escriba su respuesta a partir de este punto <<< */
 */
-A = LOAD './data.csv' using PigStorage(',') AS (id:int,  name:chararray, lastname:chararray,   date:chararray,  color:chararray, other:int);
-B = FILTER A BY (name matches 'K.*') or (color matches 'blue');
-C = FOREACH B GENERATE name, color;
-STORE C INTO 'output/' using PigStorage(',');
+datos = LOAD './data.csv' using PigStorage(',') AS (id:int, nombre:chararray, apellido:chararray, fecha:chararray, color:chararray, nivel:int);
+seleccion = FILTER datos BY (nombre matches 'K.*') or (color matches 'blue');
+salida = FOREACH seleccion GENERATE nombre, color;
+STORE salida INTO 'output/' using PigStorage(',');

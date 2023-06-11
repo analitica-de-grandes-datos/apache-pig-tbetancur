@@ -19,17 +19,8 @@ evaluación, pig sera eejcutado ejecutado en modo local:
 $ pig -x local -f pregunta.pig
 
 */
-data_table = LOAD 'data.csv' USING PigStorage(',')
-    AS (
-        Id:int,
-        firstname:chararray,
-        Apellido:chararray,
-        Fecha:datetime,
-        color:chararray,
-        Cantidad:int
-    );
-
-specific_columns = FOREACH data_table GENERATE firstname, color;
-filter_rows = FILTER specific_columns BY color == 'blue' AND STARTSWITH(firstname,'Z');
-format_output = FOREACH filter_rows GENERATE CONCAT(firstname,' ',color);
-STORE format_output INTO 'output' USING PigStorage(',');
+datos = LOAD './data.csv' using PigStorage(',') AS (id:int, nombre:chararray, apellido:chararray, fecha:chararray, color:chararray, nivel:int);
+seleccion = FOREACH datos GENERATE nombre, color;
+seleccion_filtro = FILTER seleccion BY color == 'blue' AND STARTSWITH(nombre,'Z');
+salida = FOREACH seleccion_filtro GENERATE CONCAT(nombre,' ',color);
+STORE salida INTO 'output' USING PigStorage(',');

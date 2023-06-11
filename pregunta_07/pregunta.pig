@@ -14,7 +14,7 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-A = LOAD './data.tsv' AS (letter:chararray, setTuplesLetters:bag{}, arrayLetters:map[]);
-B = FOREACH A GENERATE letter, (int)COUNT(setTuplesLetters) AS totalC2 , (int) SIZE(arrayLetters) AS totalC3;
-C = ORDER B BY letter, totalC2, totalC3;
-STORE C INTO 'output/' using PigStorage(',');
+datos = LOAD './data.tsv' AS (columna1:chararray, columna2:bag{}, columna3:map[]);
+seleccion = FOREACH datos GENERATE columna1, (int)COUNT(columna2) AS total_columna2 , (int) SIZE(columna3) AS total_columna3;
+salida = ORDER seleccion BY columna1, total_columna2, total_columna3;
+STORE salida INTO 'output/' using PigStorage(',');

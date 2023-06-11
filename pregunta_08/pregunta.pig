@@ -16,12 +16,10 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-A = LOAD 'data.tsv'
-    AS (f1:CHARARRAY, f2:BAG{t: TUPLE(p:CHARARRAY)}, f3:MAP[]);
-B = FOREACH A GENERATE f2, f3;
-C = FOREACH B GENERATE FLATTEN(f2),FLATTEN(f3);
-D = GROUP C BY ($0, $1);
-E = FOREACH D GENERATE group , COUNT($1);
-DUMP E;
+datos = LOAD 'data.tsv' USING PigStorage('\t') AS (columna1:chararray, columna2:BAG{dict:TUPLE(letter:chararray)}, columna3:MAP[]);
+seleccion = FOREACH datos GENERATE columna2, columna3;
+clave_valor = FOREACH seleccion GENERATE FLATTEN(columna2),FLATTEN(columna3);
+grupos = GROUP clave_valor BY ($0, $1);
+salida = FOREACH grupos GENERATE group , COUNT($1);
 
-STORE E INTO 'output/' using PigStorage(',') ;
+STORE salida INTO 'output/' using PigStorage(',') ;

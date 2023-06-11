@@ -13,9 +13,8 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
-
-A = LOAD './data.csv' using PigStorage(',') AS (id:int,  name:chararray, lastname:chararray,   date:chararray,  color:chararray, other:int);
-B = FOREACH A GENERATE SUBSTRING(date, 0, 4) AS yearBirthday;
-C = GROUP B BY yearBirthday;
-D = FOREACH C GENERATE $0, COUNT($1);
-STORE D INTO 'output/' using PigStorage(',');
+datos = LOAD './data.csv' using PigStorage(',') AS (id:int, nombre:chararray, apellido:chararray, fecha:chararray, color:chararray, nivel:int);
+seleccion = FOREACH datos GENERATE SUBSTRING(fecha, 0, 4) AS ano;
+grupos = GROUP seleccion BY ano;
+salida = FOREACH grupos GENERATE $0, COUNT($1);
+STORE salida INTO 'output/' using PigStorage(',');
